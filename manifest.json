@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+
+  "name": "Tower Tag",
+  "description": "This extension improve the tag system of tower",
+  "version": "0.1",
+  "author":"jswh",
+  "content_scripts": [
+    {
+      "matches":["*://tower.im/*"],
+      "js":["zepto.min.js","script.js"]
+    }
+  ],
+  "permissions": [
+    "activeTab"
+  ]
+}
