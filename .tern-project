@@ -1,0 +1,11 @@
+{
+"libs": [
+    "jquery"
+  ],
+  "loadEagerly": [
+  ],
+  "plugins": {
+	"node": {},
+	"complete_strings": {}
+  }
+}
