@@ -1,15 +1,37 @@
 (function () {
 	chrome.storage.sync.get(function(setting) {
-		$(document).ready(function() {change();});
+		$(document).ready(function() {
+			addCss();
+			changeAll();
+		});
 		$(document).on('DOMNodeInserted', function(e) {
 			if(e.target.className == 'todos-all todos-view member-view' || e.target.className == 'todos-all todos-view list-view' || e.target.className == 'simple-filedrop') {
-				change();
+				changeAll();
 			}
 		});
-		function change() {
-			$('.tag').each(function (i, tag) {
+
+		$('#todolists').on('DOMNodeInserted', function (e) {
+			target = $(e.target);
+			if(target.hasClass('todo')) {
+				change(target.find('.content-linkable>.tag'));
+			}
+		});
+
+		function changeAll() {
+			$('.content-linkable>.tag').each(function (i, tag) {
 				$tag = $(tag);
+				change($tag);
+			});
+		}
+
+		function addCss() {
+			$('head').append("<style>.block-header .simple-checkbox, .block-header .todo-detail{display:none;}.block-header .todo-content{color:#333}</style>");
+		}
+
+		function change($tag) {
+				console.log($tag);
 				tagText = $tag.text();
+				console.log(tagText);
 				switch (tagText) {
 					case 'block-header':
 						$todo = $tag.closest('.todo');
@@ -18,9 +40,7 @@
 							'text-align':'center'
 						});
 						$wrap = $tag.closest('.todo-wrap');
-						$wrap.children('.simple-checkbox').hide();
-						$wrap.children('.todo-detail').hide();
-						$wrap.children('.todo-content').css({ 'color':'#333333'});
+						$wrap.addClass('block-header');
 						$tag.hide();
 						break;
 					default:
@@ -28,7 +48,6 @@
 							changeColor($tag, setting[tagText]);
 						}
 				}
-			});
 		}
 
 		function changeColor($tag, color) {
