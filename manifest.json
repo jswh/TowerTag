@@ -5,13 +5,23 @@
   "description": "This extension improve the tag system of tower",
   "version": "0.1",
   "author":"jswh",
+
+  "icons": {
+    "16":"icon_16.png",
+    "128": "icon_128.png"
+  },
+  "browser_action": {
+    "default_icon": "icon_16.png",
+    "default_popup": "setting.html"
+  },
   "content_scripts": [
     {
       "matches":["*://tower.im/*"],
-      "js":["zepto.min.js","script.js"]
+      "js":["js/jquery-2.1.1.min.js","js/script.js"]
     }
   ],
   "permissions": [
-    "activeTab"
+    "activeTab",
+	"storage"
   ]
 }
