@@ -16,6 +16,7 @@
 ##使用介绍
 查看使用介绍视频
 [优酷](http://v.youku.com/v_show/id_XMTYyMTg5NTA5Mg==.html)
+[YouTube](https://youtu.be/-aSaQKS9-Lc)
 
 ## ToDo
 
