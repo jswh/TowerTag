@@ -5,6 +5,7 @@ $(document).ready(function () {
 			$line = $(makeLine(i, setting[i].bg, setting[i].ft));
 			form.append($line);
 			bindColorPicker($line);
+			bindNameChange($line);
 		}
 	});
 
@@ -12,12 +13,13 @@ $(document).ready(function () {
 		$line = $(makeLine('', '', ''));
 		form.append($line);
 		bindColorPicker($line);
+		bindNameChange($line);
 	});
 
 	form.focusout(function () {
 		save();
 	});
-
+	
 	function makeLine(name, bg, ft) {
 		bg = bg ? bg : '#e3f2f7';
 		ft = ft ? ft : '#335566';
@@ -74,5 +76,12 @@ $(document).ready(function () {
 					}
 				}
 			});
+	}
+
+	function bindNameChange($line) {
+		nameInput = $line.find('.name');
+		nameInput.change(function () {
+			$line.find('.tag-sample').text(nameInput.val());
+		});
 	}
 });
