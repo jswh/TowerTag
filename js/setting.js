@@ -59,11 +59,11 @@ $(document).ready(function () {
 
 	fronted = false;
 	function bindColorPicker($line) {
-		ts = $line.find('.tag-sample');
 		$line.find('span').colorPicker({
 			customBG: '#000',
-			margin: '7px 0 0 0',
+			margin: '-20px 0 0 -80px',
 			renderCallback:function ($ele, toggled) {
+				ts = $ele.find('.tag-sample');
 				if (toggled === undefined) {
 					bg = '#' + this.color.colors.HEX;
 					ft = this.color.colors.HUELuminance > 0.22 ? '#666' : '#fff';
