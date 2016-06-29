@@ -35,7 +35,6 @@ $(document).ready(function () {
 			'</div>';
 	}
 
-
 	function save() {
 		var setting = {};
 		$(".tag-group").each(function (index, ele){
@@ -47,13 +46,29 @@ $(document).ready(function () {
 				setting[name] = {'bg':bg, 'ft':ft};
 			}
 		});
+		console.log(setting);
 		chrome.storage.sync.get(function(oldSetting) {
+			var deletedSetting = {};
 			for (var i in oldSetting) {
 				if (!setting[i]) {
-					chrome.storage.sync.remove(i);
+					deletedSetting[i] = 'deleting';
 				}
 			}
+			//trigger the delete
+			chrome.storage.sync.set(deletedSetting);
+
+			var addSetting = {};
+			for (var j in setting) {
+				if (!oldSetting[j]) {
+					addSetting[j] = 'adding';
+				}
+			}
+			console.log(addSetting)
+
+			//preadd the new setting
+			chrome.storage.sync.set(addSetting);
 		});
+		//really set all changes
 		chrome.storage.sync.set(setting);
 	}
 
@@ -82,8 +97,9 @@ $(document).ready(function () {
 
 	function bindNameChange($line) {
 		nameInput = $line.find('.name');
-		nameInput.change(function () {
-			$line.find('.tag-sample').text(nameInput.val());
+		nameInput.change(function (e) {
+			input = $(e.target);
+			input.closest('.tag-group').find('.tag-sample').text(input.val());
 		});
 	}
 });

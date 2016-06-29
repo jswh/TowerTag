@@ -1,14 +1,17 @@
 (function () {
 	$(document).ready(function () {
 		addCss();
-		chrome.storage.sync.get(function(setting) {
-			changeAll(setting);
-		});
-
+		var changing = false;
 		$(document).on('DOMNodeInserted', function(e) {
 			chrome.storage.sync.get(function(setting) {
-			if(e.target.className == 'todos-all todos-view member-view' || e.target.className == 'todos-all todos-view list-view' || e.target.className == 'simple-filedrop') {
-				changeAll(setting);
+			if(e.target.className == 'simple-checkbox' && !changing) {
+				changing = true;
+				setTimeout(function (){
+					changeAll(setting);
+					setTimeout(function () {
+						changing = false;
+					}, 1000);
+				}, 150);
 			}
 			});
 		});
@@ -20,6 +23,21 @@
 					change(target.find('.content-linkable>.tag'), setting);
 				}
 			});
+		});
+		
+		chrome.storage.onChanged.addListener(function (changed) {
+			for (var i in changed) {
+				if (changed[i].newValue === 'deleting') {
+					chrome.storage.sync.remove(i);
+					revert(i);
+				} else if (changed[i].newValue !== 'adding') {
+					chrome.storage.sync.get(changeAll);
+				}
+			}
+		});
+
+		chrome.storage.sync.get(function(setting) {
+			changeAll(setting);
 		});
 	});
 
@@ -34,10 +52,19 @@
 		});
 	}
 
+	function revert(tagName) {
+		$('.content-linkable>.changed-tag').each(function (i, tag) {
+			$tag = $(tag);
+			if ($tag.text() == tagName) {
+				revertColor($tag);
+			}
+		});
+	}
+
 	function addCss() {
 		$('head').append("<style>.block-header .simple-checkbox, .block-header .todo-detail{display:none;}.block-header .todo-content{color:#333}</style>");
 	}
-
+	
 	function change($tag, setting) {
 			tagText = $tag.text();
 			switch (tagText) {
@@ -54,8 +81,6 @@
 				default:
 					if (setting[tagText]) {
 						changeColor($tag, setting[tagText]);
-					} else if ($tag.hasClass('change-tag')) {
-						revertColor($tag);
 					}
 			}
 	}
@@ -75,15 +100,7 @@
 	}
 
 	function revertColor($tag) {
-		$tag.css({
-			'background': color.bg,
-			'color': color.ft,
-			'padding': '0.1em 0.2em',
-			'vertical-align': '1px',
-			'font-size': '82%',
-			'font-weight': 'normal',
-			'border-radius': '2px'
-		});
+		$tag.css({});
 		$tag.addClass('tag');
 		$tag.removeClass('changed-tag');
 	}
