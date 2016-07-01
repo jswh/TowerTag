@@ -63,7 +63,6 @@ $(document).ready(function () {
 					addSetting[j] = 'adding';
 				}
 			}
-			console.log(addSetting)
 
 			//preadd the new setting
 			chrome.storage.sync.set(addSetting);
@@ -81,7 +80,8 @@ $(document).ready(function () {
 				ts = $ele.find('.tag-sample');
 				if (toggled === undefined) {
 					bg = '#' + this.color.colors.HEX;
-					ft = this.color.colors.HUELuminance > 0.22 ? '#666' : '#fff';
+					rgb = this.color.colors.RND.rgb;
+					ft = '#' + rgb.r.toString(16) + (235 - rgb.g).toString(16) + (200 - rgb.b).toString(16);
 					ts.css('background-color', bg);
 					ts.css('color', ft);
 					$line.find('.bg').val(bg);
