@@ -25,6 +25,14 @@
 			});
 		});
 		
+        $('.kanban-todos').on('DOMNodeInserted', function (e) {
+			chrome.storage.sync.get(function(setting) {
+				target = $(e.target);
+				if(target.hasClass('todo')) {
+					change(target.find('.assignee'), setting);
+				}
+			});
+        });
 		chrome.storage.onChanged.addListener(function (changed) {
 			for (var i in changed) {
 				if (changed[i].newValue === 'deleting') {
@@ -50,6 +58,10 @@
 			$tag = $(tag);
 			change($tag, setting);
 		});
+        $('.assignee').each(function (i, tag) {
+            $tag = $(tag);
+            change($tag, setting);
+        });
 	}
 
 	function revert(tagName) {
@@ -66,7 +78,7 @@
 	}
 	
 	function change($tag, setting) {
-			tagText = $tag.text();
+			tagText = $tag.text().replace(/^\s+|\s+$/g, '');
 			switch (tagText) {
 				case 'block-header':
 					$todo = $tag.closest('.todo');
@@ -80,23 +92,35 @@
 					break;
 				default:
 					if (setting[tagText]) {
-						changeColor($tag, setting[tagText]);
+                        $assign = $tag.closest('.todo-assign-due');
+                        if ($assign.length > 0) {
+                            changeColor($assign, setting[tagText], false);
+                        } else {
+                            changeColor($tag, setting[tagText], true);
+                        }
 					}
 			}
 	}
 
-	function changeColor($tag, color) {
+	function changeColor($tag, color, isTag) {
 		$tag.removeClass('tag');
 		$tag.addClass('changed-tag');
-		$tag.css({
-			'background': color.bg,
-			'color': color.ft,
-			'padding': '0.1em 0.2em',
-			'vertical-align': '1px',
-			'font-size': '82%',
-			'font-weight': 'normal',
-			'border-radius': '2px'
-		});
+        if (isTag) {
+            $tag.css({
+                'background': color.bg,
+                'color': color.ft,
+                'padding': '0.1em 0.2em',
+                'vertical-align': '1px',
+                'font-size': '82%',
+                'font-weight': 'normal',
+                'border-radius': '2px'
+            });
+        } else {
+            $tag.css({
+                'background': color.bg,
+                'color': color.ft,
+            });
+        }
 	}
 
 	function revertColor($tag) {
